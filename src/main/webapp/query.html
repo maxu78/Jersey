@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MyHtml.html</title>
+	
+    <meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+    
+    <!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+	<script type="text/javascript" src="jquery-1.8.0.min.js"></script>
+	<script type="text/javascript">
+		function query(){
+			$.ajax({
+				type: "GET",
+				url: "http://127.0.0.1:8080/Jersey/rest/device/get/"+$("#deviceID1").val(),
+				async: true,
+				dataType: "json",
+				success: function(data){
+					console.log(data);
+					if(data != null && data.length>0){
+						for(var i=0; i<data.length; i++){
+							$("#myTable").append("<tr><td>"+data[i].deviceID+"</td><td>"+data[i].deviceName+"</td><td>"+data[i].deviceModelCode+"</td><td>"+data[i].loopAddress+"</td></tr>");
+						}
+					}
+				}
+			});
+		}
+		
+		function submitThis(){
+			var para = $("#myForm").serializeArray();
+			console.log(para);
+			$.ajax({
+				type: "POST",
+				url: "http://127.0.0.1:8080/Jersey/rest/device/insert/",
+				data: para,
+				async: true,
+				dataType: "json",
+//				contentType : 'application/json',
+				success: function(data){
+					console.log(data);
+					if(data.resCode = "0"){
+						alert("ok!");
+					}
+				}
+			});
+		}
+	</script>
+  </head>
+  
+  <body>
+    <input type="text" name="deviceID1" id="deviceID1" onblur="query()"/>
+    
+    <table id="myTable" border="0">
+    	<tr><td>id</td><td>name</td><td>modelcode</td><td>loopaddress</td></tr>
+    </table>
+    <form id="myForm">
+	    <input type="text" name="deviceID" id="deviceID">
+	    <input type="text" name="deviceName" id="deviceName">
+	    <input type="text" name="loopAddress" id="loopAddress">
+	    <input type="button" id="sub" value="submit" onclick="submitThis();">
+    </form>
+  </body>
+</html>
